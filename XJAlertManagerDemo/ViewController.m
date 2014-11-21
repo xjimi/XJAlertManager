@@ -7,6 +7,7 @@
 //
 
 #import "ViewController.h"
+#import "XJAlertManager.h"
 
 @interface ViewController ()
 
@@ -14,14 +15,18 @@
 
 @implementation ViewController
 
-- (void)viewDidLoad {
+- (void)viewDidLoad
+{
     [super viewDidLoad];
-    // Do any additional setup after loading the view, typically from a nib.
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (IBAction)showAlert
+{
+    XJAlertManager *alert = [XJAlertManager alertWithTitle:@"title" message:@"message" viewController:self];
+    [alert addButtonWithTitle:@"OK" handler:^{}];
+    [alert addCancelButtonWithTitle:@"CANCEL" handler:^{}];
+    //[alert addButtonWithTitle:@"Destructive" style:XJAlertActionStyleDestructive handler:^{}];
+    [alert show];
 }
 
 @end
