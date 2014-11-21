@@ -8,6 +8,12 @@
 
 #import <Foundation/Foundation.h>
 #import "UIAlertView+BlocksKit.h"
+#import "UIActionSheet+BlocksKit.h"
+
+typedef NS_ENUM(NSInteger, XJAlertStyle) {
+    XJAlertStyleActionSheet = 0,
+    XJAlertStyleAlert,
+};
 
 typedef NS_ENUM(NSInteger, XJAlertActionStyle) {
     XJAlertActionStyleDefault = 0,
@@ -17,13 +23,15 @@ typedef NS_ENUM(NSInteger, XJAlertActionStyle) {
 
 @interface XJAlertManager : NSObject
 
++ (instancetype)actionSheetWithTitle:(NSString *)title message:(NSString *)message viewController:(UIViewController *)viewController;
+
 + (instancetype)alertWithTitle:(NSString *)title message:(NSString *)message viewController:(UIViewController *)viewController;
 
 - (void)addButtonWithTitle:(NSString *)title handler:(void (^)(void))block;
 
-- (void)addCancelButtonWithTitle:(NSString *)title handler:(void (^)(void))block;
+- (void)addDestructiveButtonWithTitle:(NSString *)title handler:(void (^)(void))block;
 
-- (void)addButtonWithTitle:(NSString *)title style:(XJAlertActionStyle)style handler:(void (^)(void))block;
+- (void)addCancelButtonWithTitle:(NSString *)title handler:(void (^)(void))block;
 
 - (void)show;
 

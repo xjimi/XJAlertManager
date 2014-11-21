@@ -17,17 +17,39 @@
 
 @implementation XJAlertManager
 
++ (instancetype)actionSheetWithTitle:(NSString *)title message:(NSString *)message viewController:(UIViewController *)viewController
+{
+    return [XJAlertManager initWithTitle:title message:message style:XJAlertStyleActionSheet viewController:viewController];
+}
+
 + (instancetype)alertWithTitle:(NSString *)title message:(NSString *)message viewController:(UIViewController *)viewController
+{
+    return [XJAlertManager initWithTitle:title message:message style:XJAlertStyleAlert viewController:viewController];
+}
+
++ (instancetype)initWithTitle:(NSString *)title
+                      message:(NSString *)message
+                        style:(XJAlertStyle)style
+               viewController:(UIViewController *)viewController
 {
     XJAlertManager *alertManager = [[XJAlertManager alloc] init];
     if ([UIAlertController class])
     {
-        alertManager.alert = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertControllerStyle alertStyle = (NSInteger)style;
+        alertManager.alert = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:alertStyle];
         alertManager.viewController = viewController;
     }
     else
     {
-        alertManager.alert = [UIAlertView bk_alertViewWithTitle:title message:message];
+        if (style == XJAlertStyleAlert)
+        {
+            alertManager.alert = [UIAlertView bk_alertViewWithTitle:title message:message];
+        }
+        else if (style == XJAlertStyleActionSheet)
+        {
+            alertManager.alert = [UIActionSheet bk_actionSheetWithTitle:title];
+            alertManager.viewController = viewController;
+        }
     }
     return alertManager;
 }
@@ -35,6 +57,11 @@
 - (void)addButtonWithTitle:(NSString *)title handler:(void (^)(void))block
 {
     [self addButtonWithTitle:title style:XJAlertActionStyleDefault handler:block];
+}
+
+- (void)addDestructiveButtonWithTitle:(NSString *)title handler:(void (^)(void))block
+{
+    [self addButtonWithTitle:title style:XJAlertActionStyleDestructive handler:block];
 }
 
 - (void)addCancelButtonWithTitle:(NSString *)title handler:(void (^)(void))block
@@ -59,13 +86,22 @@
             [self.alert bk_setCancelButtonWithTitle:title handler:^{
                 [self handlerBlock:block];
             }];
+            return;
         }
-        else
+        else if (style == XJAlertActionStyleDestructive)
         {
-            [self.alert bk_addButtonWithTitle:title handler:^{
-                [self handlerBlock:block];
-            }];
+            if ([self.alert isKindOfClass:[UIActionSheet class]])
+            {
+                [self.alert bk_setDestructiveButtonWithTitle:title handler:^{
+                    [self handlerBlock:block];
+                }];
+                return;
+            }
         }
+        
+        [self.alert bk_addButtonWithTitle:title handler:^{
+            [self handlerBlock:block];
+        }];
     }
 }
 
@@ -78,8 +114,22 @@
 
 - (void)show
 {
-    if ([UIAlertController class]) [self.viewController presentViewController:self.alert animated:YES completion:nil];
-    else [self.alert show];
+    if ([UIAlertController class])
+    {
+        [self.viewController presentViewController:self.alert animated:YES completion:nil];
+    }
+    else
+    {
+        if ([self.alert isKindOfClass:[UIAlertView class]])
+        {
+            [self.alert show];
+        }
+        else if ([self.alert isKindOfClass:[UIActionSheet class]])
+        {
+            UIViewController *viewController = self.viewController;
+            [self.alert showInView:viewController.view];
+        }
+    }
 }
 
 @end

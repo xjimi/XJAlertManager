@@ -24,9 +24,17 @@
 {
     XJAlertManager *alert = [XJAlertManager alertWithTitle:@"title" message:@"message" viewController:self];
     [alert addButtonWithTitle:@"OK" handler:^{}];
+    [alert addDestructiveButtonWithTitle:@"Destructive" handler:^{}];
     [alert addCancelButtonWithTitle:@"CANCEL" handler:^{}];
-    //[alert addButtonWithTitle:@"Destructive" style:XJAlertActionStyleDestructive handler:^{}];
     [alert show];
 }
 
+- (IBAction)showActionSheet
+{
+    XJAlertManager *alert = [XJAlertManager actionSheetWithTitle:@"title" message:@"message" viewController:self];
+    [alert addButtonWithTitle:@"OK" handler:^{}];
+    [alert addDestructiveButtonWithTitle:@"Destructive" handler:^{}];
+    [alert addCancelButtonWithTitle:@"CANCEL" handler:^{}];
+    [alert show];
+}
 @end
