@@ -4,7 +4,7 @@ XJAlertManager
 
 ## Installation
 
-安裝 pod 'BlocksKit'
+需安裝 pod 'BlocksKit'
 
 ### Example usage
 
